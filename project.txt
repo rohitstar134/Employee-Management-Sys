@@ -1,0 +1,2183 @@
+* Code for admin/member login…
+<?php
+session_start(); // Starting Session
+$error=""; // Variable To Store Error Message
+if (isset($_POST['submit'])) {
+if (empty($_POST['username']) || empty($_POST['password'])) {
+$error = "Username or Password is invalid";
+}
+else
+{
+// Define $username and $password
+$username=$_POST['username'];
+$password=$_POST['password'];
+// To protect MySQL injection for Security purpose
+$username = stripslashes($username);
+$password = stripslashes($password);
+$username = mysql_real_escape_string($username);
+$password = mysql_real_escape_string($password);
+// Establishing Connection with Database Server 
+require_once('connection.php');
+
+$query = mysql_query("select * from login where password='$password' AND username='$username'", $con);
+$rows=mysql_fetch_array($query);
+$count = mysql_num_rows($query);
+if ($count == 1) {
+$_SESSION['login_user']=$username; // Initializing Session
+$_SESSION['userlevel']=$rows['userlevel'];
+} 
+else 
+{
+$error = "Username or Password is invalid";
+}
+mysql_close($con); // Closing Connection
+}
+}
+?>
+
+
+
+* Code for index …
+<?php
+include('login.php'); // Includes Login Script
+if(isset($_SESSION['login_user']) && $_SESSION['userlevel']==2)
+header("location: profile.php");
+else if(isset($_SESSION['login_user']) && $_SESSION['userlevel']==1)
+header("location: profile1.php");
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Login Form </title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body >
+<div id="main" align="center">
+<h1>EMPLOYEE MANAGMENT SYSTEM
+</h1><div id="login" >
+<h2 align="left">Login Form</h2>
+<form action="" method="post">
+<label>
+  <div align="left">UserName :
+  </div>
+</label>
+<div align="left">
+  <input id="name" name="username" placeholder="username" type="text">
+  
+</div>
+<label>
+  <div align="left">Password :
+  </div>
+</label>
+<div align="left">
+  <input id="password" name="password" placeholder="**********" type="password">
+  <input name="submit" type="submit" value=" Login ">
+<span><?php echo $error; ?></span>
+</div>
+</form>
+</div>
+</div>
+</body>
+</html>
+
+
+
+* Code for admin menu …
+<link href="SpryAssets/SpryMenuBarHorizontal.css" rel="stylesheet" type="text/css" />
+<script src="SpryAssets/SpryMenuBar.js" type="text/javascript"></script>
+<ul id="MenuBar1" class="MenuBarHorizontal">
+<li><a href="profile1.php">Home</a>  </li>
+<li><a href="#" class="MenuBarItemSubmenu">Member</a>
+<ul>
+<li><a href="memberAdd.php">Add</a></li>
+<li><a href="MemberUpdate.php">Update</a></li>
+<li><a href="MemberDelete.php">Delete</a></li>
+<li><a href="MemberView.php">View</a></li>
+<li><a href="MemberSearch.php">Search</a></li>
+</ul>
+</li>
+<li><a href="#" class="MenuBarItemSubmenu">Employee</a>
+<ul>
+<li><a href="employeeAdd.php">Add</a></li>
+<li><a href="empupdate.php">Update</a></li>
+<li><a href="empdelete.php">Delete</a></li>
+<li><a href="empview.php">View</a></li>
+<li><a href="empsearch.php">Search</a></li>
+</ul>
+
+<li><a href="#" class="MenuBarItemSubmenu">7th pay</a>
+<ul>
+<li><a href="7th pay.php">Calculator</a></li>
+<li><a href="calcall.php">View Fixation</a></li>
+</ul>
+</li>
+<li><a href="logout.php">Logout</a></li>
+</ul>
+<script type="text/javascript">
+var MenuBar1 = new Spry.Widget.MenuBar("MenuBar1", {imgDown:"SpryAssets/SpryMenuBarDownHover.gif", imgRight:"SpryAssets/SpryMenuBarRightHover.gif"});
+</script>
+
+
+* Code for admin profile …
+<?php
+require_once "session.php";
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Main Control Panel</title>
+<link href="eam_main.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<!-- Logo and Header Bar -->
+<div id="header" align="center">
+<?php require_once "header.php"; ?> </div>
+  <b>Welcome : <i><?php echo $_SESSION['login_user']; ?></i></b></p>
+<div> <?php require_once "menu1.php"; ?> </div>
+<div id="mainContent"> <?php require_once "itam_introduction.php"; ?> </div>
+<div> <?php require_once "footer.php"; ?> </div>
+</body>
+</html>
+
+
+* Code for user menu …
+<link href="SpryAssets/SpryMenuBarHorizontal.css" rel="stylesheet" type="text/css" />
+<script src="SpryAssets/SpryMenuBar.js" type="text/javascript"></script>
+<ul id="MenuBar1" class="MenuBarHorizontal">
+  <li><a href="index.php">Home</a>  </li>
+  <li><a href="#" class="MenuBarItemSubmenu">7th pay</a>
+    <ul>
+      <li><a href="7th  pay.php">Calculator</a></li>
+      <li><a href="calcall.php">Calculator</a></li>
+     </ul>
+  </li>
+    <li><a href="logout.php">Log Out</a></li>
+</ul>
+<script type="text/javascript">
+var MenuBar1 = new Spry.Widget.MenuBar("MenuBar1", {imgDown:"SpryAssets/SpryMenuBarDownHover.gif", imgRight:"SpryAssets/SpryMenuBarRightHover.gif"});
+</script>
+* Code for user profile …
+<?php
+require_once "session.php";
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Main Control Panel</title>
+<link href="eam_main.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<!-- Logo and Header Bar -->
+<div id="header" align="center">
+<?php require_once "header.php"; ?> </div>
+  <b>Welcome :<i><?php echo $_SESSION['login_user']; ?></i></b></p>
+<div> <?php require_once "menu.php"; ?> </div>
+<div id="mainContent"> <?php require_once "itam_introduction.php"; ?> </div>
+<div> <?php require_once "footer.php"; ?> </div>
+</body>
+</html>
+
+
+
+* Code for view members …
+<html>
+<head><title>details</title></head>
+<body bgcolor="f1f1c1">
+<?php
+require_once("connection.php");
+	$query = "select * from login ";
+	$retval = mysql_query($query,$con);
+	 if(! $retval )
+	  {
+	     die('Could not fetch data: ' . mysql_error());
+	  }
+	  else
+{
+	$num=mysql_numrows($retval);
+	echo "<br />";
+  echo "<table width=80% bgcolor= #f1f1f1 cellpadding='5' cellspacing='2' align='center' border=1px>
+  		   <tr>
+			<td colspan='3'><img src='addemp.png' width='133' height='80' align ='right'></td>
+			<td colspan='4'> <strong> LIST OF MEMBER</strong></td>
+		  </tr>
+      	  <tr>
+		  <td><strong> User Level </strong></td>
+		  <td><strong> ID </strong></td>
+		  <td><strong> User Name </strong></td>
+		  <td><strong> Password </strong></td>
+		  <td><strong> Email </strong></td>
+		  <td><strong> First Name </strong></td>
+		  <td><strong> Last Name </strong></td>
+	      </tr>";
+		   
+	$i=0;
+while ($i < $num)
+ {
+ echo "<tr>";	
+$ul= mysql_result($retval,$i,"userlevel");
+$id= mysql_result($retval,$i,"id");	
+$name=mysql_result($retval,$i,"username");
+$password=mysql_result($retval,$i,"password");
+$email=mysql_result($retval,$i,"email");
+$firstname=mysql_result($retval,$i,"firstname");
+$lastname=mysql_result($retval,$i,"lastname");
+echo "<td>$ul</td>";
+echo "<td>$id</td>";
+echo "<td>$name</td>";
+echo "<td>$password</td>";
+echo "<td>$email</td>";
+echo "<td>$firstname</td>";
+echo "<td>$lastname</td>";
+echo "</tr>";
+$i++;
+}
+}
+?>
+</body>
+</html>
+
+
+* Code for add member …
+<?php
+    $error= "";
+    if(isset($_POST['submit']))
+     {
+	     require_once("connection.php");
+	    $u_ul=$_POST['member_level'];
+ 	     $u_name = $_POST['member_Name'];
+	     $u_psw = $_POST['Password'];
+	     $u_email = $_POST['Email'];
+	     $u_fnm = $_POST['F_Name'];
+	     $u_lnm = $_POST['L_Name'];
+	     
+	$query = "insert into login values('$u_ul','', '$u_name','$u_psw','$u_email','$u_fnm','$u_lnm')";
+$retval = mysql_query($query,$con);
+	 	if(!$retval )
+	  	{
+	     die('Could not enter data: ' . mysql_error());
+	  	}
+	 mysql_close($con);
+	  }
+	 
+	  ?>
+<html>
+ <head>
+   <title>Add a new Member</title> 
+ </head>
+  <body bgcolor=#f1f1c1>
+  <br>
+	<form method="POST" action="<?php $PHP_SELF ?>">
+		<table width=100% bgcolor= #f1f1f1 cellpadding="5" cellspacing="2" align="center">
+		  <tr>
+			<td><img src="addemp.png" width="229" height="212" alt="addemp"></td>
+			<td> <strong>ADD MEMBER</strong></td>
+		  </tr>
+          <tr>
+			<td align="right"> <strong>Member Level: </strong></td>
+			<td><select name="member_level" required>
+				<option></option>
+				<option>1</option>
+				<option>2</option>
+			</select>
+			</td>
+		  </tr>
+		  <tr>
+			<td width="47%" align="right"> <strong>Member Name :</strong></td>
+			<td width="53%"><input name='member_Name' type='text' required></td>
+		  </tr>
+		  <tr>
+			<td align="right"> <strong>Password :</strong></td>		
+			<td><input name='Password' type='password' required></td>
+		  </tr>
+		  <tr>
+			<td align="right"> <strong>Email :</strong></td>
+			<td><input name='Email' type='text' required></td>
+		  </tr>
+		  <tr>
+			<td align="right"> <strong>First Name :</strong></td>
+			<td><input name='F_Name' type='text' required></td>
+		  </tr>
+		  <tr>
+			<td align="right"> <strong>Last Name :</strong></td>
+			<td><input name='L_Name' type='text' required ></td>
+		  </tr>	
+		 		  <tr>
+			<td align="right"><input type='submit' value='submit' name='submit'></td>
+            <td><span><?php echo $error ?></span></td>
+		  </tr>
+		</table>
+     </form>
+</body>
+</html>
+
+
+* Code for update member …
+<div>
+<br />
+<form method="POST" action="<?php $PHP_SELF ?>">
+
+<table width=80% bgcolor= #f1f1f1 cellpadding='5' cellspacing='2' align='center' >
+<tr>
+  <th colspan='2' align='center'><b>MEMBER TO BE UPDATED</b></th>
+ </tr>
+<tr>
+	<td align="right"> Enter the id no of the member : </td>
+	<td><input name='id' type='text' ></td>
+		  </tr>
+          <tr>
+			<td colspan='2' align="center"><input type='submit' value='submit' name='submit'></td>
+            </tr>
+            </table>
+     </form>
+     <br />
+</div>
+<div>
+<?php
+	if(isset($_POST['submit']))
+     {
+	require_once("connection.php");
+	if(!$con)
+	  {
+	     die('Could not connect: ' . mysql_error());
+	  }
+	else
+      {  
+       $id= $_POST['id'];
+	   $_SESSION['id']= $id;
+	   $query = "select * from login where id='$id' ";
+	   $retval = mysql_query($query,$con);
+	     if(! $retval )
+	       {
+	        die('Could not fetch data: ' . mysql_error());
+	       }
+	     else
+           {
+	$num=mysql_num_rows($retval);
+  echo "<table width=80% bgcolor= #f1f1f1 cellpadding='5' cellspacing='2' align='center' border=1px>
+       <tr>
+	      <td><strong> Member Level </strong></td>
+		  <td><strong> ID </strong></td>
+		  <td><strong> Member Name </strong></td>
+		  <td><strong> Password </strong></td>
+		  <td><strong> Email </strong></td>
+		  <td><strong> First Name </strong></td>
+		  <td><strong> Last Name </strong></td>
+				 		  </tr> "; 
+	$i=0;
+while ($i < $num)
+ {
+ echo "<tr>";	
+$ul= mysql_result($retval,$i,"userlevel");	
+$id= mysql_result($retval,$i,"id");	
+$uname=mysql_result($retval,$i,"username");
+$pw=mysql_result($retval,$i,"password");
+$mail=mysql_result($retval,$i,"email");
+$fname=mysql_result($retval,$i,"firstname");
+$lname=mysql_result($retval,$i,"lastname");
+
+
+echo "<td>$ul</td>";
+echo "<td>$id</td>";
+echo "<td>$uname</td>";
+echo "<td>$pw</td>";
+echo "<td>$mail</td>";
+echo "<td>$fname</td>";
+echo "<td>$lname</td>";
+
+
+echo "</tr>";
+$i++;
+}
+echo "</table>";
+echo "<br />";
+}
+}
+echo '<div> <form method="POST" action="">';
+	echo '<table width=80% bgcolor= #f1f1f1 cellpadding="5" cellspacing="2" align="center">
+		  
+		  <tr>
+			<td align="right"> <strong>Member Level: </strong></td>
+			<td><select name="userlevel" >
+				<option></option>
+				<option>1</option>
+				<option>2</option>
+			</select>
+			</td>
+			<input type="hidden" name="id" value="$id">
+            <td align="right"><input type="submit" value="update" name="submit1"></td>
+		  </tr>
+		  <tr>
+			<td align="right"><strong> Member Name : </strong></td>
+			<td><input name="username" type="text" ></td>
+              <input type="hidden" name="id" value="$id">
+            <td align="right"><input type="submit" value="update" name="submit1"></td>
+            </tr> 
+		  <tr>
+			<td align="right"><strong> Password : </strong></td>		
+			<td><input name="password" type="text" ></td>
+              <input type="hidden" name="id" value="$id">
+            <td align="right"><input type="submit" value="update" name="submit1"></td>
+             </tr>
+		  <tr>
+			<td align="right"><strong> Email : </strong></td>
+			<td><input name="email" type="text" ></td>
+              <input type="hidden" name="id" value="$id">
+            <td align="right"><input type="submit" value="update" name="submit1"></td>
+		  </tr>
+		  <tr>
+			<td align="right"><strong> First Name : </strong></td>
+			<td><input name="firstname" type="text" ></td>
+              <input type="hidden" name="id" value="$id">
+            <td align="right"><input type="submit" value="update" name="submit1"></td>
+		  </tr>
+           <tr>
+			<td align="right"><strong> Last Name : </strong></td>
+			<td><input name="lastname" type="text" ></td>
+              <input type="hidden" name="id" value="$id">
+            <td align="right"><input type="submit" value="update" name="submit1"></td>
+            </tr>
+						
+		  	
+		  </table>
+        
+     </form>
+</div> ';
+
+}
+?>
+</div>
+
+    <?php
+    	$error= "";
+	$value="";
+	$search="";
+	if(isset($_POST['submit1']))
+     {
+	require_once("connection.php");
+	//session_start();
+	$id = $_SESSION['id'];
+	if(!$con)
+	  {
+	     die('Could not connect: ' . mysql_error());
+	  }
+	else
+	  {
+	    if($_POST['userlevel'])
+		{
+		 	$value = $_POST['userlevel'];
+			$search ="userlevel";
+		}
+		else if($_POST['username'])
+		{
+	     $value = $_POST['username'];
+		 $search = "username";
+		}
+		else if($_POST['password'])
+		{
+	     $value = $_POST['password'];
+		 $search = "password";
+		}
+		else if($_POST['email'])
+		{
+	     $value = $_POST['email'];
+		 $search = "email";
+		}
+		else if($_POST['firstname'])
+		{
+	     $value = $_POST['firstname'];
+		 $search = "firstname";
+		}
+		else if($_POST['lastname'])
+		{
+	     $value = $_POST['lastname'];
+		 $search = "lastname";
+		}
+			  
+		$query = "update login set $search='$value' where id='$id' ";
+    $retval = mysql_query($query,$con);
+	echo "Successfully updated <br />";
+	$query1 = "select * from login where id='$id'";
+	$retval1 = mysql_query($query1,$con);
+	 if(!$retval1 )
+	  {
+	     die('Could not fetch data: ' . mysql_error());
+	  }
+	  $num=mysql_num_rows($retval1);
+ echo "<br />";	  
+ echo "<table width=80% bgcolor= #f1f1f1 cellpadding='5' cellspacing='2' align='center' border=1px>
+      	  <tr>
+		  <td><strong> User Level </strong></td>
+		  <td><strong> ID </strong></td>
+		  <td><strong> User Name </strong></td>
+		  <td><strong> Password </strong></td>
+		  <td><strong> Email </strong></td>
+		  <td><strong> First Name </strong></td>
+		  <td><strong> Last Name </strong></td>
+		  		 
+		  </tr>
+		  <tr>"; 
+	$i=0;
+while ($i<$num)
+ {
+ echo "<tr>";
+$ul= mysql_result($retval1,$i,"userlevel");	
+$id= mysql_result($retval1,$i,"id");	
+$uname=mysql_result($retval1,$i,"username");
+$pw=mysql_result($retval1,$i,"password");
+$mail=mysql_result($retval1,$i,"email");
+$fname=mysql_result($retval1,$i,"firstname");
+$lname=mysql_result($retval1,$i,"lastname");
+
+echo "<td>$ul</td>";
+echo "<td>$id</td>";
+echo "<td>$uname</td>";
+echo "<td>$pw</td>";
+echo "<td>$mail</td>";
+echo "<td>$fname</td>";
+echo "<td>$lname</td>";
+echo "</tr>";
+$i++;
+}
+}
+}
+?>
+</body>
+/html>
+
+
+* Code for delete member …
+<html>
+<head>
+<title> Delete User </title>
+</head>
+<body>
+<div>
+<br />
+<form method="POST" action="">
+<table width=80% bgcolor= #f1f1f1 cellpadding='5' cellspacing='2' align='center' >
+<tr>
+  <th colspan='2' align='center'><b>MEMBER TO BE DELETED</b></th>
+ </tr>
+<tr>
+	<td align="right"> Enter the id of the member  : </td>
+	<td><input name='id' type='text' ></td>
+		  </tr>
+          <tr>
+			<td colspan='2' align="center"><input type='submit' value='submit' name='submit'></td>
+            </tr>
+            </table>
+</form>
+</div>
+<div>
+<?php
+if(isset($_POST['submit']))
+	{
+	require_once("connection.php");
+	if(!$con)
+	    die('Could not connect: ' . mysql_error());
+	else
+      { 
+	   	$id= $_POST['id'];
+	   	$query = "select * from login where id='$id'";
+		$retval = mysql_query($query,$con);
+	 	if(!$retval )
+	 	 {
+	     die('Could not fetch data: ' . mysql_error());
+	 	 }
+	 	else
+		 {
+			$num=mysql_numrows($retval);
+			if($num>0)
+				{
+  				echo "<br />";
+  				echo '<form method="POST" action="">';
+  				echo "<table width=80% bgcolor= #f1f1f1 cellpadding='5' cellspacing='2' align='center' border=1px>
+       			<tr>
+				<td><strong> Member Level </strong></td>
+		  <td><strong> ID </strong></td>
+		  <td><strong> Member Name </strong></td>
+		  <td><strong> Password </strong></td>
+		  <td><strong> Email </strong></td>
+		  <td><strong> First Name </strong></td>
+		  <td><strong> Last Name </strong></td>
+		 		  		</tr>";
+		  
+				$i=0;
+				while ($i < $num)
+ 				{
+ 				echo "<tr>";	
+		        $ul=mysql_result($retval,$i,"userlevel");
+				$id=mysql_result($retval,$i,"id");
+				$name=mysql_result($retval,$i,"username");
+                $pw=mysql_result($retval,$i,"password");
+                $mail=mysql_result($retval,$i,"email");
+                $fname=mysql_result($retval,$i,"firstname");
+                $lname=mysql_result($retval,$i,"lastname");
+               
+                
+				echo "<td>$ul</td>";
+				echo "<td>$id</td>";
+				echo "<td>$name</td>";
+				echo "<td>$pw</td>";
+				echo "<td>$mail</td>";
+				echo "<td>$fname</td>";
+				echo "<td>$lname</td>";
+			  	echo "</tr>";
+				$i++;
+				}
+				echo "</table>";
+				echo "<input type='hidden' name='id' value='$id'>";
+				echo "<input type='submit' value='Confirm' name='confirm'>";
+				echo "</form>";
+				}
+			else 
+				echo "Data not found";
+		    }
+	  }
+}
+?>
+</div>
+<div>
+<?php
+    $error= "";
+    if(isset($_POST['confirm']))
+     {
+ 	   $bid = $_POST['id'];
+	   require_once("connection.php");
+	if(!$con)
+	    die('Could not connect: ' . mysql_error());    
+	$query = "DELETE FROM login WHERE id='$bid'";
+	$retval = mysql_query($query,$con);
+	 if(!$retval )
+	   die('Could not delete data: ' . mysql_error());
+	 else 
+	   echo "Successfully deleted";
+	  mysql_close($con);
+	 }
+	 ?>
+</div>
+</body>
+</html>	
+
+
+* Code for search members …
+<html>
+ <head>
+   <title>SEARCH A MEMBER</title> 
+ </head>
+ <body bgcolor=#f1f1c1>
+  	<div>
+  	<br />
+	<form method="POST" action="">
+			<table width=80% height="246" align="center" cellpadding="2" cellspacing="1" bgcolor= #f1f1f1>
+		  <tr>
+			<td height="95"><img src="addemp.png" width="133" height="80"></td>
+			<td><strong> SEARCH MEMBER </strong></td>
+		  </tr>
+          <tr>
+			<td align="right"> User Level: </td>
+			<td><select name="userlevel" >
+                <option></option>
+				<option>1</option>
+                <option>2</option>
+			</select>
+			</td>
+            <td align="left"><input type='submit' value='search' name='submit'></td>
+		  </tr>
+		  <tr>
+			<td height="29" align="right">  ID : </td>
+			<td><input name='id' type='text' ></td>
+            <td align="left"><input type='submit' value='search' name='submit'></td>
+		  </tr>
+          <tr>
+			<td height="29" align="right"> User Name : </td>
+			<td><input name='username' type='text' ></td>
+            <td align="left"><input type='submit' value='search' name='submit'></td>
+		  </tr>
+          <tr>
+			<td height="29" align="right"> Password : </td>
+			<td><input name='password' type='text' ></td>
+            <td align="left"><input type='submit' value='search' name='submit'></td>
+            
+            </tr>
+ 
+		  <tr>
+			<td height="29" align="right"> Email : </td>		
+			<td><input name='email' type='text' ></td>
+            <td align="left"><input type='submit' value='search' name='submit'></td>
+		  </tr>
+		  <tr>
+			<td height="29" align="right"> First Name: </td>
+			<td><input name='firstname' type='text' ></td>
+            <td align="left"><input type='submit' value='search' name='submit'></td>
+		  </tr>
+		  <tr>
+			<td height="29" align="right"> Last Name: </td>
+			<td><input name='lastname' type='text' ></td>
+            <td align="left"><input type='submit' value='search' name='submit'></td>
+		  </tr>
+		 </table>
+     </form>
+	</div>
+	<div>
+	<?php
+    $error= "";
+	$value="";
+	$search="";
+	if(isset($_POST['submit']))
+     {
+		require_once("connection.php");
+		if($_POST['userlevel'])
+		{
+		 	$value = $_POST['userlevel'];
+			$search ="userlevel";
+		}
+	    if($_POST['id'])
+		{
+		 	$value = $_POST['id'];
+			$search ="id";
+		}
+		if($_POST['username'])
+		{
+	     $value = $_POST['username'];
+		 $search = "username";
+		}
+		if($_POST['password'])
+		{
+	     $value = $_POST['password'];
+		 $search = "password";
+		}
+		if($_POST['email'])
+		{
+	     $value = $_POST['email'];
+		 $search = "email";
+		}
+		if($_POST['firstname'])
+		{
+	     $value = $_POST['firstname'];
+		 $search = "firstname";
+		}
+		if($_POST['lastname'])
+		{
+	     $value = $_POST['lastname'];
+		 $search = "lastname";
+		}
+		
+			
+		$query = "select * from login where $search='$value' ";
+		$retval = mysql_query($query,$con);
+	
+	 	if(! $retval )
+	 	 {
+	     	die('Could not fetch data: ' . mysql_error());
+	  	 }
+	  	else
+		{
+		$num=mysql_numrows($retval);
+		if($num>0)
+			{
+			echo "<br />";
+  			echo "<table width=80% bgcolor= #f1f1f1 cellpadding='5' cellspacing='2' align='center' border=1px>
+  		   	<tr>
+		  	<td colspan='12'> <strong> SEARCH RESULTS </strong></td>	
+		  	</tr>
+      	  	<tr>
+			<td><strong> User Level </strong></td>
+		  	<td><strong> ID </strong></td>
+		  	<td><strong> User Name </strong></td>
+		  	<td><strong> Password </strong></td>
+		  	<td><strong> Email </strong></td>
+		  	<td><strong> First Name </strong></td>
+		  	<td><strong> Last Name </strong></td>
+		  			  
+		  	</tr>";
+		   
+			$i=0;
+			while ($i < $num)
+ 				{
+ 				echo "<tr>";	
+				$ul= mysql_result($retval,$i,"userlevel");	
+				$id= mysql_result($retval,$i,"id");	
+				$uname=mysql_result($retval,$i,"username");
+				$pw=mysql_result($retval,$i,"password");
+				$email=mysql_result($retval,$i,"email");
+				$fname=mysql_result($retval,$i,"firstname");
+				$lname=mysql_result($retval,$i,"lastname");
+								
+				echo "<td>$ul</td>";
+				echo "<td>$id</td>";
+				echo "<td>$uname</td>";
+				echo "<td>$pw</td>";
+				echo "<td>$email</td>";
+				echo "<td>$fname</td>";
+				echo "<td>$lname</td>";
+				echo "</tr>";
+				$i++;
+				}
+			}
+			else
+			echo "Data with matching value does not exist !!";
+			}
+	 }
+?>
+</div>
+</body>
+</html>
+
+
+* Code for view employee …
+<html>
+<head><title>details</title></head>
+<body bgcolor="f1f1c1">
+<?php
+require_once("connection.php");
+	$query = "select * from employee";
+	$retval = mysql_query($query,$con);
+	 if(! $retval )
+	  {
+	     die('Could not fetch data: ' . mysql_error());
+	  }
+	  else
+{
+	$num=mysql_numrows($retval);
+	echo "<br />";
+  echo "<table width=80% bgcolor= #f1f1f1 cellpadding='5' cellspacing='2' align='center' border=1px>
+  		   <tr>
+			<td colspan='3'><img src='addemp.png' width='133' height='80' align ='right'></td>
+			<td colspan='4'> <strong> LIST OF EMPLOYEE</strong></td>
+		  </tr>
+      	  <tr>
+		  <td><strong> Employee No</strong></td>
+		  <td><strong> Employee name </strong></td>
+		  <td><strong> dept </strong></td>
+		  <td><strong> Gradepay </strong></td>
+     	  <td><strong> Payrate </strong></td>
+		  <td><strong> hra</strong></td>
+		  <td><strong> ta </strong></td>
+		 		  		</tr>";
+		   
+	$i=0;
+while ($i < $num)
+ {
+ echo "<tr>";	
+		$e_no = mysql_result($retval,$i,"e_no");	
+		$e_name= mysql_result($retval,$i,"e_Name");	
+		$e_desig=mysql_result($retval,$i,"e_desig");
+		$gradepay=mysql_result($retval,$i,"gradepay");
+		$payrate=mysql_result($retval,$i,"payrate");
+		$hra=mysql_result($retval,$i,"hra");
+		$ta =mysql_result($retval,$i,"ta");
+				
+				echo "<td>$e_no </td>";
+				echo "<td>$e_name </td>";
+				echo "<td>$e_desig </td>";
+				echo "<td>$gradepay </td>";
+				echo "<td>$payrate </td>";
+				echo "<td>$hra </td>";
+				echo "<td>$ta </td>";
+				
+echo "</tr>";
+$i++;
+}
+}
+?>
+</body>
+</html>
+
+
+* Code for add employee …
+<?php
+    $error= "";
+    if(isset($_POST['submit']))
+     {
+	     require_once("connection.php");
+	     $e_no = $_POST['e_no'];
+	     $e_name = $_POST['e_Name'];
+         $e_desig=$_POST['e_desig'];
+		 $gradepay = $_POST['gradepay'];
+		 $payrate = $_POST['payrate'];
+		 $hra = $_POST['hra'];
+		 $ta = $_POST['ta'];
+		 
+       $query = "insert into employee values('$e_no', '$e_name','$e_desig','$gradepay','$payrate','$hra','$ta')";
+$retval = mysql_query($query,$con);
+	 	if(!$retval )
+	  	{
+	     die('Could not enter data: ' . mysql_error());
+	  	}
+	 mysql_close($con);
+	  }
+	 
+	  ?>
+<html>
+ <head>
+   <title>Add a new Employee</title> 
+ </head>
+  <body bgcolor=#f1f1c1>
+  <br>
+	<form method="POST" action="<?php $PHP_SELF ?>">
+		<table width=100% bgcolor= #f1f1f1 cellpadding="5" cellspacing="2" align="center">
+		  <tr>
+			<td><img src="addemp.png" width="229" height="212" alt="empadd"></td>
+			<td> <strong>ADD EMPLOYEE</strong></td>
+		  </tr>
+  <tr>
+			<td width="47%" align="right"> <strong>Employee No :</strong></td>
+			<td width="53%"><input name='e_no' type='text' required></td>
+		  </tr>         
+		  <tr>
+			<td width="47%" align="right"> <strong>Employee Name :</strong></td>
+			<td width="53%"><input name='e_Name' type='text' required></td>
+		  </tr>
+		  <tr>
+			<td align="right"> <strong>Designation :</strong></td>
+			<td><input name='e_desig' type='text' required></td>
+		  </tr>
+		  <tr>
+			<td align="right"> <strong>Gradepay: </strong></td>
+			<td><select name="gradepay" required>
+    <option value="1" selected="selected">1800 PB-1(5200-20200)</option>
+    <option value="2">1900 PB-1(5200-20200)</option>
+    <option value="3">2000 PB-1(5200-20200)</option>
+    <option value="4">2400 PB-1(5200-20200)</option>
+    <option value="5">2800 PB-1(5200-20200)</option>
+    <option value="6">4200 PB-2(9300-34800)</option>
+    <option value="7">4600 PB-2(9300-34800)</option>
+    <option value="8">4800 PB-2(9300-34800)</option>
+    <option value="9">5400 PB-2(9300-34800)</option>
+    <option value="10">5400 PB-3(15600-39100)</option>
+    <option value="11">6600 PB-3(15600-39100)</option>
+    <option value="12">7600 PB-3(15600-39100)</option>
+    <option value="13">8700 PB-4(37400-67000)</option>
+    <option value="13A">8900 PB-4(37400-67000)</option>
+    <option value="14">10000 PB-4(37400-67000)</option>
+    <option value="15">PB-5(67000-79000)</option>
+    <option value="16">PB-6(75500-80000)</option>
+    <option value="17">PB-7(80000)</option>
+    <option value="18">PB-8(90000)</option>
+  </select>
+			</td>
+		  </tr>
+		  <tr>
+			<td align="right"> <strong>PayRate:</strong></td>
+			<td><input name='payrate' type='text' required></td>
+		  </tr>
+<tr>
+			<td align="right"> <strong>HRA: </strong></td>
+			<td><select name="hra" required>
+				<option>0</option>
+				<option>10</option>
+				<option>20</option>
+                <option>30</option>
+			</select>
+			</td>
+		  </tr>
+		  <tr>
+			<td align="right"> <strong>TA : </strong></td>
+			<td><select name="ta" required>
+				<option>400</option>
+				<option>600</option>
+				<option>800</option>
+                <option>1600</option>
+                <option>3200</option>
+			</select>
+			</td>
+		  </tr>
+		  		 		  <tr>
+			<td align="right"><input type='submit' value='submit' name='submit'></td>
+            <td><span><?php echo $error ?></span></td>
+		  </tr>
+		</table>
+     </form>
+</body>
+</html>
+* Code for update employee …
+<div>
+<br />
+<form method="POST" action="<?php $PHP_SELF ?>">
+
+<table width=80% bgcolor= #f1f1f1 cellpadding='5' cellspacing='2' align='center' >
+<tr>
+  <th colspan='2' align='center'><b>MEMBER TO BE UPDATED</b></th>
+ </tr>
+<tr>
+	<td align="right"> Enter the id no of the member : </td>
+	<td><input name='e_no' type='text' ></td>
+		  </tr>
+          <tr>
+			<td colspan='2' align="center"><input type='submit' value='submit' name='submit'></td>
+            </tr>
+            </table>
+     </form>
+     <br />
+</div>
+<div>
+<?php
+	if(isset($_POST['submit']))
+     {
+	require_once("connection.php");
+	if(!$con)
+	  {
+	     die('Could not connect: ' . mysql_error());
+	  }
+	else
+      {  
+       $e_no= $_POST['e_no'];
+	   $_SESSION['e_no']= $e_no;
+	 $query = "select * from employee where e_no='$e_no' ";
+	   $retval = mysql_query($query,$con);
+	     if(! $retval )
+	       {
+	        die('Could not fetch data: ' . mysql_error());
+	       }
+	     else
+           {
+	$num=mysql_num_rows($retval);
+  echo "<table width=80% bgcolor= #f1f1f1 cellpadding='5' cellspacing='2' align='center' border=1px>
+       <tr>
+		  <td><strong> Employee No</strong></td>
+		  <td><strong> Employee name </strong></td>
+		  <td><strong> Designation </strong></td>
+		  <td><strong> Gradepay </strong></td>
+		  <td><strong> Payrate </strong></td>
+		  <td><strong> hra</strong></td>
+		  <td><strong> ta </strong></td>
+		 		  		</tr>";
+	
+		   
+	$i=0;
+while ($i < $num)
+ {
+	 	echo"<tr>";
+		$e_no = mysql_result($retval,$i,"e_no");	
+		$e_name= mysql_result($retval,$i,"e_Name");	
+		$e_desig=mysql_result($retval,$i,"e_desig");
+		$gradepay=mysql_result($retval,$i,"gradepay");
+		$payrate=mysql_result($retval,$i,"payrate");
+		$hra=mysql_result($retval,$i,"hra");
+		$ta =mysql_result($retval,$i,"ta");
+				
+				echo "<td>$e_no </td>";
+				echo "<td>$e_name </td>";
+				echo "<td>$e_desig </td>";
+				echo "<td>$gradepay </td>";
+				echo "<td>$payrate </td>";
+				echo "<td>$hra </td>";
+				echo "<td>$ta </td>";
+				
+		echo "</tr>";
+		$i++;
+}
+echo "</table>";
+echo "<br />";
+}
+}
+echo'<div> <form method="POST" action="">';
+	echo '<table width=80% bgcolor= #f1f1f1 cellpadding="5" cellspacing="2" align="center">
+		  
+		    <tr>
+			<td align="right"><strong> Employee Name : </strong></td>
+			<td><input name="e_Name" type="text" ></td>
+              <input type="hidden" name="e_no" value="$e_no">
+            <td align="right"><input type="submit" value="update" name="submit1"></td>
+            </tr> 
+			
+			<tr>
+			<td align="right"><strong> Designation : </strong></td>
+			<td><input name="e_desig" type="text" ></td>
+              <input type="hidden" name="e_no" value="$e_no">
+            <td align="right"><input type="submit" value="update" name="submit1"></td>
+            </tr> 
+			<tr>
+			<td align="right"><strong> Gradepay : </strong></td>
+			<td><input name="gradepay" type="text" ></td>
+              <input type="hidden" name="e_no" value="$e_no">
+            <td align="right"><input type="submit" value="update" name="submit1"></td>
+            </tr> 
+			<tr>
+			<td align="right"><strong> Payrate : </strong></td>
+			<td><input name="payrate" type="text" ></td>
+              <input type="hidden" name="e_no" value="$e_no">
+            <td align="right"><input type="submit" value="update" name="submit1"></td>
+            </tr> 
+			<tr>
+			<td align="right"><strong> HRA : </strong></td>
+			<td><input name="hra" type="text" ></td>
+              <input type="hidden" name="e_no" value="$e_no">
+            <td align="right"><input type="submit" value="update" name="submit1"></td>
+            </tr> 
+			<tr>
+			<td align="right"><strong> TA: </strong></td>
+			<td><input name="ta" type="text" ></td>
+              <input type="hidden" name="e_no" value="$e_no">
+            <td align="right"><input type="submit" value="update" name="submit1"></td>
+            </tr> 
+			</table>
+        
+     </form>
+</div> ';
+
+}
+?>
+
+</div>
+
+ <?php
+    $error= "";
+	$value="";
+	$search="";
+	if(isset($_POST['submit1']))
+     {
+	require_once("connection.php");
+	//session_start();
+	$e_no = $_SESSION['e_no'];
+	if(!$con)
+	  {
+	     die('Could not connect: ' . mysql_error());
+	  }
+	else
+	  {
+	    if($_POST['e_Name'])
+		{
+		 	$value = $_POST['e_Name'];
+			$search ="e_Name";
+		}
+		else if($_POST['e_desig'])
+		{
+	     $value = $_POST['e_desig'];
+		 $search = "e_desig";
+		}
+		else if($_POST['gradepay'])
+		{
+	     $value = $_POST['gradepay'];
+		 $search = "gradepay";
+		}
+		else if($_POST['payrate'])
+		{
+	     $value = $_POST['payrate'];
+		 $search = "payrate";
+		}
+		else if($_POST['hra'])
+		{
+	     $value = $_POST['hra'];
+		 $search = "hra";
+		}
+		else if($_POST['ta'])
+		{
+	     $value = $_POST['ta'];
+		 $search = "ta";
+		}
+		
+		$query = "update employee set $search='$value' where e_no='$e_no' ";
+    $retval = mysql_query($query,$con);
+	echo "Successfully updated <br />";
+	$query1 = "select * from employee where e_no='$e_no'";
+	$retval1 = mysql_query($query1,$con);
+	 if(!$retval1 )
+	  {
+	     die('Could not fetch data: ' . mysql_error());
+	  }
+	  $num=mysql_num_rows($retval1);
+ echo "<br />";	  
+ echo "<table width=80% bgcolor= #f1f1f1 cellpadding='5' cellspacing='2' align='center' border=1px>
+      	    <tr>
+		  <td><strong> Employee No</strong></td>
+		  <td><strong> Employee name </strong></td>
+		  <td><strong> Designation </strong></td>
+		  <td><strong> Gradepay </strong></td>
+		  <td><strong> Payrate </strong></td>
+		  <td><strong> hra</strong></td>
+		  <td><strong> ta </strong></td>
+		 		  		</tr>
+	 <tr>"; 
+	$i=0;
+while ($i<$num)
+ {
+ echo "<tr>";
+$e_no= mysql_result($retval1,$i,"e_no");	
+$e_name= mysql_result($retval1,$i,"e_Name");	
+$e_desig=mysql_result($retval1,$i,"e_desig");
+$gradepay=mysql_result($retval1,$i,"gradepay");
+$payrate=mysql_result($retval1,$i,"payrate");
+$hra=mysql_result($retval1,$i,"hra");
+$ta=mysql_result($retval1,$i,"ta");
+
+echo "<td>$e_no</td>";
+echo "<td>$e_name</td>";
+echo "<td>$e_desig</td>";
+echo "<td>$gradepay</td>";
+echo "<td>$payrate</td>";
+echo "<td>$hra</td>";
+echo "<td>$ta</td>";
+echo "</tr>";
+$i++;
+}
+}
+}
+?>
+</body>
+</html>
+
+
+* Code for delete employee …
+<html>
+<head>
+<title> Delete Employee </title>
+</head>
+<body>
+<div>
+<br />
+<form method="POST" action="">
+<table width=80% bgcolor= #f1f1f1 cellpadding='5' cellspacing='2' align='center' >
+<tr>
+  <th colspan='2' align='center'><b>EMPLOYEE TO BE DELETED</b></th>
+ </tr>
+<tr>
+	<td align="right"> Enter the empno of the employee: </td>
+	<td><input name='e_no' type='text' ></td>
+		  </tr>
+          <tr>
+			<td colspan='2' align="center"><input type='submit' value='submit' name='submit'></td>
+            </tr>
+            </table>
+</form>
+</div>
+<div>
+<?php
+if(isset($_POST['submit']))
+	{
+	require_once("connection.php");
+	if(!$con)
+	    die('Could not connect: ' . mysql_error());
+	else
+      { 
+	   	$e_no= $_POST['e_no'];
+	   	$query = "select * from employee where e_no='$e_no'";
+		$retval = mysql_query($query,$con);
+	 	if(!$retval )
+	 	 {
+	     die('Could not fetch data: ' . mysql_error());
+	 	 }
+	 	else
+		 {
+			$num=mysql_numrows($retval);
+			if($num>0)
+				{
+  				echo "<br />";
+  				echo '<form method="POST" action="">';
+  				echo "<table width=80% bgcolor= #f1f1f1 cellpadding='5' cellspacing='2' align='center' border=1px>
+       			<tr>
+				<td><strong> Employee No</strong></td>
+		  		<td><strong> Employee name </strong></td>
+		  		<td><strong> dept </strong></td>
+			    <td><strong> Gradepay </strong></td>
+				<td><strong> Payrate </strong></td>
+				<td><strong> hra</strong></td>
+				<td><strong> ta </strong></td>
+						
+						</tr>";
+		  
+				$i=0;
+				while ($i < $num)
+ 				{
+ 				echo "<tr>";	
+		$e_no = mysql_result($retval,$i,"e_no");	
+		$e_name= mysql_result($retval,$i,"e_Name");	
+		$e_desig=mysql_result($retval,$i,"e_desig");
+		$gradepay=mysql_result($retval,$i,"gradepay");
+		$payrate=mysql_result($retval,$i,"payrate");
+		$hra=mysql_result($retval,$i,"hra");
+		$ta =mysql_result($retval,$i,"ta");
+		
+				echo "<td>$e_no </td>";
+				echo "<td>$e_name </td>";
+				echo "<td>$e_desig </td>";
+				echo "<td>$gradepay </td>";
+				echo "<td>$payrate </td>";
+				echo "<td>$hra </td>";
+				echo "<td>$ta </td>";
+				
+			  	echo "</tr>";
+				$i++;
+				}
+				echo "</table>";
+				echo "<input type='hidden' name='e_no' value='$e_no'>";
+				echo "<input type='submit' value='Confirm' name='confirm'>";
+				echo "</form>";
+				}
+			else 
+				echo "Data not found";
+		    }
+	  }
+}
+?>
+</div>
+<div>
+<?php
+    $error= "";
+    if(isset($_POST['confirm']))
+     {
+ 	   $e_no = $_POST['e_no'];
+	   require_once("connection.php");
+	if(!$con)
+	    die('Could not connect: ' . mysql_error());    
+	$query = "DELETE FROM employee WHERE e_no='$e_no'";
+	$retval = mysql_query($query,$con);
+	 if(!$retval )
+	   die('Could not delete data: ' . mysql_error());
+	 else 
+	   echo "Successfully deleted";
+	  mysql_close($con);
+	 }
+	 	 
+	 ?>
+
+</div>
+</body>
+</html>
+
+* Code for search employee …
+<html>
+ <head>
+   <title>SEARCH A EMPLOYEE</title> 
+ </head>
+ <body bgcolor=#f1f1c1>
+  	<div>
+  	<br />
+	<form method="POST" action="">
+			<table width=80% height="246" align="center" cellpadding="2" cellspacing="1" bgcolor= #f1f1f1>
+		  <tr>
+			<td height="95"><img src="addemp.png" width="133" height="80"></td>
+			<td><strong> SEARCH EMPLOYEE </strong></td>
+		  </tr>
+          <tr>
+			<td height="29" align="right">  Employee No: </td>
+			<td><input name='e_no' type='text' ></td>
+            <td align="left"><input type='submit' value='search' name='submit'></td>
+		  </tr>
+		  <tr>
+			<td height="29" align="right">  Employee Name : </td>
+			<td><input name='e_Name' type='text' ></td>
+            <td align="left"><input type='submit' value='search' name='submit'></td>
+		  </tr>
+          <tr>
+			<td height="29" align="right"> Designation : </td>
+			<td><input name='e_desig' type='text' ></td>
+            <td align="left"><input type='submit' value='search' name='submit'></td>
+            
+            </tr>
+ 
+		   <tr>
+			<td height="29" align="right"> gradepay : </td>		
+			<td><input name='gradepay' type='text' ></td>
+            <td align="left"><input type='submit' value='search' name='submit'></td>
+		  </tr>
+
+		  <tr>
+			<td height="29" align="right"> PayRate: </td>
+			<td><input name='payrate' type='text' ></td>
+            <td align="left"><input type='submit' value='search' name='submit'></td>
+		  </tr>
+		  <tr>
+			<td height="29" align="right"> HRA: </td>
+			<td><input name='hra' type='text' ></td>
+            <td align="left"><input type='submit' value='search' name='submit'></td>
+		  </tr>
+          <tr>
+			<td height="29" align="right"> TA: </td>
+			<td><input name='ta' type='text' ></td>
+            <td align="left"><input type='submit' value='search' name='submit'></td>
+		  </tr>
+          </table>
+     </form>
+	</div>
+    <div>
+	<?php
+    $error= "";
+	$value="";
+	$search="";
+	if(isset($_POST['submit']))
+     {
+		require_once("connection.php");
+	    if($_POST['e_no'])
+		{
+		 	$value = $_POST['e_no'];
+			$search ="e_no";
+		}
+		else if($_POST['e_Name'])
+		{
+	     $value = $_POST['e_Name'];
+		 $search = "e_Name";
+		}
+		else if($_POST['e_desig'])
+		{
+	     $value = $_POST['e_desig'];
+		 $search = "e_desig";
+		}
+		else if($_POST['gradepay'])
+		{
+	     $value = $_POST['gradepay'];
+		 $search = "gradepay";
+		}
+		else if($_POST['payrate'])
+		{
+	     $value = $_POST['payrate'];
+		 $search = "payrate";
+		}
+	  
+		else if($_POST['hra'])
+		{
+	     $value = $_POST['hra'];
+		 $search = "hra";
+		}
+	  	else if($_POST['ta'])
+		{
+	     $value = $_POST['ta'];
+		 $search = "ta";
+		}
+	  
+			
+$query = "select * from employee where $search='$value' ";
+		$retval = mysql_query($query,$con);
+	
+	 	if(! $retval )
+	 	 {
+	     	die('Could not fetch data: ' . mysql_error());
+	  	 }
+	  	else
+		{
+		$num=mysql_numrows($retval);
+		if($num>0)
+			{
+			echo "<br />";
+  			echo "<table width=80% bgcolor= #f1f1f1 cellpadding='5' cellspacing='2' align='center' border=1px>
+ <tr>
+<td colspan='12'> <strong> SEARCH RESULTS </strong></td>	
+		  </tr>
+       	   <tr>
+		  <td><strong> Employee No</strong></td>
+		  <td><strong> Employee name </strong></td>
+		  <td><strong> Designation </strong></td>
+		  <td><strong> Gradepay </strong></td>
+		  <td><strong> Payrate </strong></td>
+		  <td><strong> hra</strong></td>
+		  <td><strong> ta </strong></td>
+		 		  		</tr>";
+	
+		     	$i=0;
+			while ($i < $num)
+ 				{
+ 				 echo "<tr>";
+		$e_no = mysql_result($retval,$i,"e_no");	
+		$e_name= mysql_result($retval,$i,"e_Name");	
+		$e_desig=mysql_result($retval,$i,"e_desig");
+		$gradepay=mysql_result($retval,$i,"gradepay");
+		$payrate=mysql_result($retval,$i,"payrate");
+		$hra=mysql_result($retval,$i,"hra");
+		$ta =mysql_result($retval,$i,"ta");
+				
+				echo "<td>$e_no </td>";
+				echo "<td>$e_name </td>";
+				echo "<td>$e_desig </td>";
+				echo "<td>$gradepay </td>";
+				echo "<td>$payrate </td>";
+				echo "<td>$hra </td>";
+				echo "<td>$ta </td>";
+				echo "</tr>";
+				$i++;
+				}
+			}
+			else
+			echo "Data with matching value does not exist !!";
+			}
+	 }
+?>
+</div>
+ </body>	
+</html>
+
+
+* Code for 7th pay calculation for individual employee …
+<html>
+<head>
+<title>Seventh pay commision</title>
+<link href="eam_main.css" rel="stylesheet" type="text/css">
+</head>
+<body bgcolor=pink>
+<h1>7th Pay Commision Calculator</h1>
+<h>Final Calculator as per recommendations of 7th Pay Commission on 19.11.2015</h2>
+
+<div>
+<form name='calculator' method="post" action="">
+ <p><strong>Select 6th PC Grade Pay :   </strong>
+  <select name="gradepay" id="gradepay">
+    <option value="1" selected="selected">1800 PB-1(5200-20200)</option>
+    <option value="2">1900 PB-1(5200-20200)</option>
+    <option value="3">2000 PB-1(5200-20200)</option>
+    <option value="4">2400 PB-1(5200-20200)</option>
+    <option value="5">2800 PB-1(5200-20200)</option>
+    <option value="6">4200 PB-2(9300-34800)</option>
+    <option value="7">4600 PB-2(9300-34800)</option>
+    <option value="8">4800 PB-2(9300-34800)</option>
+    <option value="9">5400 PB-2(9300-34800)</option>
+    <option value="10">5400 PB-3(15600-39100)</option>
+    <option value="11">6600 PB-3(15600-39100)</option>
+    <option value="12">7600 PB-3(15600-39100)</option>
+    <option value="13">8700 PB-4(37400-67000)</option>
+    <option value="13A">8900 PB-4(37400-67000)</option>
+    <option value="14">10000 PB-4(37400-67000)</option>
+    <option value="15">PB-5(67000-79000)</option>
+    <option value="16">PB-6(75500-80000)</option>
+    <option value="17">PB-7(80000)</option>
+    <option value="18">PB-8(90000)</option>
+  </select>
+</p>
+<p><strong>Enter  6th PC Basic Pay(BP+GP) :  </strong>
+  <input type="text" name="payrate" id="payrate">
+</p>
+<p><strong>Select 6th PC House Rent Allowance% :  </strong>
+   <select name="hra" id="hra">
+   <option selected="selected">0</option>
+   <option>10</option>
+   <option>20</option>
+   <option>30</option>
+   </select>
+</p>
+<p><strong>Select 6th PC Transport Allowance : </strong>
+  <select name="ta" id="ta">
+    <option>0</option>
+    <option>400</option>
+    <option>600</option>
+    <option>800</option>
+    <option>1000</option>
+    <option>1600</option>
+    <option>3200</option>
+    </select>
+</p>
+<p>
+  <input type="submit" name="submit" id="submit" value="Submit">
+</p>
+
+</form>
+</div>
+<div>
+<?PHP
+if(isset($_POST['submit']))
+{
+	$gradepay = $_POST['gradepay'];
+	$payrate = $_POST['payrate'];
+	$hra = $_POST['hra'];
+	$ta = $_POST['ta'];
+	$darate=1.19;
+	$entrypay=0;
+    $level=0;
+	$DA=0;
+    $mfactor=0;
+	$CGEGIS;
+	$PF;
+	$oldhra=0;
+	$oldda=intval($payrate*$darate);
+	$TPA;
+	$oldtot;
+	$OLDCGEGIS;
+	$OLDPF;
+	$oldsal;
+	$index=1;
+        if($gradepay=="1")
+        {
+          $entrypay=7000; 
+	  $mfactor=2.57;
+        }
+        else if($gradepay=="2")
+        {
+          $entrypay=7730; 
+	  $mfactor=2.57;
+        }
+
+        else if($gradepay=="3")
+        {
+          $entrypay=8460; 
+	  $mfactor=2.57;
+        }
+	else if($gradepay=="4")
+        {
+          $entrypay=9910;   
+	  $mfactor=2.57;
+        }
+	else if($gradepay=="5")
+        {
+          $entrypay=11360;   
+	  $mfactor=2.57;
+        }
+	else if($gradepay=="6")
+        {
+          $entrypay=13500;   
+	  $mfactor=2.62;
+        }
+	
+	else if($gradepay=="7")
+        {
+          $entrypay=17140;
+          $mfactor=2.62;
+        }	
+		
+	else if($gradepay=="8")
+        {
+          $entrypay=18150;
+          $mfactor=2.62;
+        }	
+	else if($gradepay=="9")
+        {
+          $entrypay=20280;
+          $mfactor=2.62;
+        }	
+	else if($gradepay=="10")
+        {
+          $entrypay=21000;
+          $mfactor=2.67;
+        }	
+	else if($gradepay=="11")
+        {
+          $entrypay=25350;
+          $mfactor=2.67;
+        }	
+	else if($gradepay=="12")
+        {
+          $entrypay=29500;
+          $mfactor=2.67;
+        }	
+	else if($gradepay=="13")
+        {
+          $entrypay=46100;
+          $mfactor=2.57;
+        }	
+	else if($gradepay=="13A")
+        {
+          $entrypay=49100;
+          $mfactor=2.57;
+        }	
+	else if($gradepay=="14")
+        {
+          $entrypay=53000;
+          $mfactor=2.72;
+        }	
+	else if($gradepay=="15")
+        {
+          $entrypay=67000;
+          $mfactor=2.72;
+        }	
+	else if($gradepay=="16")
+        {
+          $entrypay=75500;
+          $mfactor=2.72;
+        }	
+	else if($gradepay=="17" )
+        {
+          $entrypay=80000;
+          $mfactor=2.81;
+        }		
+		
+	else if($gradepay=="18" )
+        {
+          $entrypay=90000;
+          $mfactor=2.78;
+        }	
+	$level=$gradepay;	
+	
+	$indexpay=intval($mfactor*$entrypay);
+	$rem=$indexpay%100;
+	if ($rem<50)
+        $indexpay=$indexpay-$rem;
+        else
+        $indexpay=$indexpay+ (100-$rem);
+		$pay=intval($payrate*2.57);
+        $index=2;
+	while($index<=40)
+	{
+         $indexpay=intval($indexpay*1.03);
+         $rem=$indexpay%100;
+         if ($rem<50)
+         $indexpay=$indexpay-$rem;
+         else
+         $indexpay=$indexpay+ (100-$rem);
+         if($indexpay>=$pay)
+         break;
+	 $index++;
+        }
+
+	if($gradepay=="17" )
+        $newpay=225000;	
+		
+	else if($gradepay=="18" )
+        $newpay=250000;	
+        else
+        $newpay=$indexpay;
+        
+		if($hra ==10)
+        {
+          $hra=(0.08)*$newpay;
+		  $oldhra=0.1*$payrate;
+		}
+	else if($hra ==20)
+        {
+          $hra=(0.16)*$newpay;
+		  $oldhra=0.2*$payrate;
+		}
+	else if($hra ==30)
+        {
+          $hra=(0.24)*$newpay;
+		  $oldhra=0.3*$payrate;
+		}
+
+        if($ta ==400)
+        {
+          $ta=800;
+		 }
+		else if($ta ==600)
+        {
+          $ta=1200;
+		}	
+		else if($ta ==800)
+        {
+          $ta=1800;
+		}
+		else if($ta ==1000)
+        {
+          $ta=2000;
+		}
+		else if($ta ==1600)
+        {
+          $ta=3600;
+		}
+		else if($ta ==3200)
+        {
+          $ta=7200;
+		}
+		
+        if($gradepay ==10 ||  $gradepay ==11 || $gradepay ==12 || $gradepay ==13 || $gradepay =="13A" || $gradepay ==14)  
+		 {
+          $TPA=intval(1800*(1+$darate));
+		 }
+		else if($gradepay ==6 ||  $gradepay ==7 || $gradepay ==8 || $gradepay ==9) 
+        {
+          $TPA=intval(800*(1+$darate));
+		}	
+		else if($gradepay ==5 ||  $gradepay ==4 || $gradepay ==3|| $gradepay ==2 || $gradepay ==1 ) 
+        {
+          $TPA=intval(400*(1+$darate));
+		}
+		
+	$receiveable =$newpay+$hra+ $ta+$DA;
+	$oldtot=$payrate+$oldhra+ $TPA +$oldda;
+	
+	
+  if($level=="1" || $level=="2" || $level=="3" || $level=="4" || $level=="5" )
+        $CGEGIS=1500; 
+	else if($level=="6" || $level=="7" || $level=="8" || $level=="9" )
+        $CGEGIS=2500; 
+else if($level=="10" || $level=="11" || $level=="12" || $level=="13" || $level=="13A" || $level=="14" || $level=="15" || $level=="16" || $level=="17" || $level=="18" )        $CGEGIS=5000; 
+
+
+		 if($gradepay=="1" || $gradepay=="2" || $gradepay=="3" || $gradepay=="4" || $gradepay=="5" )
+        $OLDCGEGIS=15; 
+	else if($gradepay=="6" || $gradepay=="7" || $gradepay=="8" || $gradepay=="9" )
+        $OLDCGEGIS=30; 
+	else if($gradepay=="10" || $gradepay=="11" || $gradepay=="12")
+        $OLDCGEGIS=60; 
+		else if($gradepay=="13" || $gardepay=="13A" || $gradepay=="14" || $gradepay=="15" ||$gradepay=="16" || $gardepay=="17" || $gradepay=="18" )
+		$OLDCGEGIS=120;
+        $PF=0.1*$newpay;
+		$OLDPF=intval($payrate/12);
+	$Deduction=$CGEGIS+$PF;
+	$olddeduction=$OLDCGEGIS+$OLDPF;
+	$netsal=$receiveable-$Deduction;
+	$oldsal=$oldtot-$olddeduction;
+echo "<table width=80% bgcolor= #f1f1f1 cellpadding='5' cellspacing='2' align='center' border=1px>
+  		   <tr>
+		  <td></td>
+		  <td><strong> 6TH PAY COMMISSION </strong></td>
+		  <td><strong> 7TH PAY COMMISSION </strong></td>
+		  </tr>";
+		  
+		  echo "<tr>";	
+		  echo "<td colspan=3><strong> EARNINGS</strong></td>";
+		  echo "</tr>";
+		  
+          echo "<tr>";	
+		  echo "<td>BASIC PAY</td>";
+		  echo "<td>$payrate</td>";
+		  echo "<td>$newpay</td>";
+		  echo "</tr>";
+	
+	      echo "<tr>";	
+		  echo "<td>DEARNESS ALLOW.</td>";
+		  echo "<td>$oldda</td>";
+		  echo "<td>$DA</td>";
+		  echo "</tr>";
+		  
+		  echo "<tr>";	
+		  echo "<td>HOUSE RENT ALLOW.</td>";
+		  echo "<td>$oldhra</td>";
+		  echo "<td>$hra</td>";
+		  echo "</tr>";
+		  
+		  echo "<tr>";	
+		  echo "<td>TRANSPORT ALLOW.</td>";
+		  echo "<td>$TPA</td>";
+		  echo "<td>$ta</td>";
+		  echo "</tr>";
+		  
+		  echo "<tr>";	
+		  echo "<td><strong>SUB TOTAL</strong></td>";
+		  echo "<td>$oldtot</td>";
+		  echo "<td>$receiveable</td>";
+		  echo "</tr>"; 
+		  
+		  echo "<tr>";	
+		  echo "<td colspan='3'><strong>DEDUCTIONS</strong></td>";
+		  echo "</tr>"; 
+		  
+		  echo "<tr>";	
+		  echo "<td>CGEGIS</td>";
+		  echo "<td>$OLDCGEGIS</td>";
+		  echo "<td>$CGEGIS</td>";
+		  echo "</tr>";
+		  
+		  echo "<tr>";	
+		  echo "<td>NPS/GPF @10%</td>";
+		  echo "<td>$OLDPF</td>";
+		  echo "<td>$PF</td>";
+		  echo "</tr>";
+		  
+		  echo "<tr>";	
+		  echo "<td><strong>SUB TOTAL</strong></td>";
+		  echo "<td>$olddeduction</td>";
+		  echo "<td>$Deduction</td>";
+		  echo "</tr>";
+		  
+		 echo "<tr>";	
+		  echo "<td><strong>NET SALARY</strong></td>";
+		  echo "<td>$oldsal</td>";
+		  echo "<td>$netsal</td>";
+		  echo "</tr>";
+		  echo "</table>";
+		  echo "<br>";
+		  echo "Multiplication Factor=".$mfactor."<br>";
+          echo "Your Level=". $level."<br>";
+          echo "Your estimated Pay=".$pay."<br>";
+}
+?>
+</div>
+</body>
+</html>
+
+
+* Code for 7th pay calculation of all employee …
+<html>
+<head><title>Calculator for all</title></head>
+<body bgcolor="f1f1c1">
+
+<div>
+<form name='calcall' method="post" action="">
+ <p>
+  <input type="submit" name="submit" id="submit" value="Calculate for all">
+</p>
+
+</form>
+</div>
+
+<?php
+if(isset($_POST['submit']))
+{
+require_once("connection.php");
+	$query = "select * from employee";
+	$retval = mysql_query($query,$con);
+	 if(! $retval )
+	  {
+	     die('Could not fetch data: ' . mysql_error());
+	  }
+	  else
+{
+	$num=mysql_numrows($retval);
+	echo "<br />";
+  echo "<table width=80% bgcolor= #f1f1f1 cellpadding='5' cellspacing='2' align='center' border=1px>
+  		   <tr>
+			<td colspan='3'><img src='emp2.jpg' width='400' height='100' align ='right'></td>
+			<td colspan='9'> <strong> NEW BASIC AND NET SALARY AS PER RECOMNDATION OF 7TH PAY COMMISSION</strong></td>
+		  </tr>
+      	  <tr>
+		  <td><strong> Employee No</strong></td>
+		  <td><strong> Employee name </strong></td>
+		  <td><strong> Designation </strong></td>
+		  <td><strong> Basic pay </strong></td>
+		  <td><strong> HRA</strong></td>
+		  <td><strong> TA </strong></td>
+		  <td><strong>DA</strong></td>
+		  <td><strong> Earnings sub total </strong></td>
+		  <td><strong> CGEGIS </strong></td>	  		
+		  <td><strong> PF </strong></td>
+		  <td><strong> Deductions sub total </strong></td>
+		  <td><strong> Net salary </strong></td>
+						</tr>";
+	
+  	   
+	$i=0;
+while ($i < $num)
+ {
+ echo "<tr>";	
+		$e_no = mysql_result($retval,$i,"e_no");	
+		$e_name= mysql_result($retval,$i,"e_Name");	
+		$e_desig=mysql_result($retval,$i,"e_desig");
+		$gradepay=mysql_result($retval,$i,"gradepay");
+		$payrate=mysql_result($retval,$i,"payrate");
+		$hra=mysql_result($retval,$i,"hra");
+		$ta =mysql_result($retval,$i,"ta");
+		$darate=1.19;
+		$entrypay=0;
+    	$level=0;
+		$DA=0;
+    	$mfactor=0;
+		$CGEGIS;
+		$PF;
+		$oldhra=0;
+		$oldda=intval($payrate*$darate);
+		$TPA;
+		$oldtot;
+	$OLDCGEGIS;
+	$OLDPF;
+	$oldsal;
+	$index=1;
+        if($gradepay=="1")
+        {
+          $entrypay=7000; 
+	  $mfactor=2.57;
+        }
+        else if($gradepay=="2")
+        {
+          $entrypay=7730; 
+	  $mfactor=2.57;
+        }
+
+        else if($gradepay=="3")
+        {
+          $entrypay=8460; 
+	  $mfactor=2.57;
+        }
+	else if($gradepay=="4")
+        {
+          $entrypay=9910;   
+	  $mfactor=2.57;
+        }
+	else if($gradepay=="5")
+        {
+          $entrypay=11360;   
+	  $mfactor=2.57;
+        }
+	else if($gradepay=="6")
+        {
+          $entrypay=13500;   
+	  $mfactor=2.62;
+        }
+	
+	else if($gradepay=="7")
+        {
+          $entrypay=17140;
+          $mfactor=2.62;
+        }	
+		
+	else if($gradepay=="8")
+        {
+          $entrypay=18150;
+          $mfactor=2.62;
+        }	
+	else if($gradepay=="9")
+        {
+          $entrypay=20280;
+          $mfactor=2.62;
+        }	
+	else if($gradepay=="10")
+        {
+          $entrypay=21000;
+          $mfactor=2.67;
+        }	
+	else if($gradepay=="11")
+        {
+          $entrypay=25350;
+          $mfactor=2.67;
+        }	
+	else if($gradepay=="12")
+        {
+          $entrypay=29500;
+          $mfactor=2.67;
+        }	
+	else if($gradepay=="13")
+        {
+          $entrypay=46100;
+          $mfactor=2.57;
+        }	
+	else if($gradepay=="13A")
+        {
+          $entrypay=49100;
+          $mfactor=2.57;
+        }	
+	else if($gradepay=="14")
+        {
+          $entrypay=53000;
+          $mfactor=2.72;
+        }	
+	else if($gradepay=="15")
+        {
+          $entrypay=67000;
+          $mfactor=2.72;
+        }	
+	else if($gradepay=="16")
+        {
+          $entrypay=75500;
+          $mfactor=2.72;
+        }	
+	else if($gradepay=="17" )
+        {
+          $entrypay=80000;
+          $mfactor=2.81;
+        }		
+		
+	else if($gradepay=="18" )
+        {
+          $entrypay=90000;
+          $mfactor=2.78;
+        }	
+	$level=$gradepay;	
+	
+	$indexpay=intval($mfactor*$entrypay);
+	$rem=$indexpay%100;
+	if ($rem<50)
+        $indexpay=$indexpay-$rem;
+        else
+        $indexpay=$indexpay+ (100-$rem);
+		$pay=intval($payrate*2.57);
+        $index=2;
+	while($index<=40)
+	{
+         $indexpay=intval($indexpay*1.03);
+         $rem=$indexpay%100;
+         if ($rem<50)
+         $indexpay=$indexpay-$rem;
+         else
+         $indexpay=$indexpay+ (100-$rem);
+         if($indexpay>=$pay)
+         break;
+	 $index++;
+        }
+
+	if($gradepay=="17" )
+        $newpay=225000;	
+		
+	else if($gradepay=="18" )
+        $newpay=250000;	
+        else
+        $newpay=$indexpay;
+        
+		if($hra ==10)
+        {
+          $hra=(0.08)*$newpay;
+		  $oldhra=0.1*$payrate;
+		}
+	else if($hra ==20)
+        {
+          $hra=(0.16)*$newpay;
+		  $oldhra=0.2*$payrate;
+		}
+	else if($hra ==30)
+        {
+          $hra=(0.24)*$newpay;
+		  $oldhra=0.3*$payrate;
+		}
+
+        if($ta ==400)
+        {
+          $ta=800;
+		 }
+		else if($ta ==600)
+        {
+          $ta=1200;
+		}	
+		else if($ta ==800)
+        {
+          $ta=1800;
+		}
+		else if($ta ==1000)
+        {
+          $ta=2000;
+		}
+		else if($ta ==1600)
+        {
+          $ta=3600;
+		}
+		else if($ta ==3200)
+        {
+          $ta=7200;
+		}
+		
+        if($gradepay ==10 ||  $gradepay ==11 || $gradepay ==12 || $gradepay ==13 || $gradepay =="13A" || $gradepay ==14)  
+		 {
+          $TPA=intval(1800*(1+$darate));
+		 }
+		else if($gradepay ==6 ||  $gradepay ==7 || $gradepay ==8 || $gradepay ==9) 
+        {
+          $TPA=intval(800*(1+$darate));
+		}	
+		else if($gradepay ==5 ||  $gradepay ==4 || $gradepay ==3|| $gradepay ==2 || $gradepay ==1 ) 
+        {
+          $TPA=intval(400*(1+$darate));
+		}
+		
+	$receiveable =$newpay+$hra+ $ta+$DA;
+	$oldtot=$payrate+$oldhra+ $TPA +$oldda;
+	
+	
+  if($level=="1" || $level=="2" || $level=="3" || $level=="4" || $level=="5" )
+        $CGEGIS=1500; 
+	else if($level=="6" || $level=="7" || $level=="8" || $level=="9" )
+        $CGEGIS=2500; 
+else if($level=="10" || $level=="11" || $level=="12" || $level=="13" || $level=="13A" || $level=="14" || $level=="15" || $level=="16" || $level=="17" || $level=="18" )        $CGEGIS=5000; 
+
+		 if($gradepay=="1" || $gradepay=="2" || $gradepay=="3" || $gradepay=="4" || $gradepay=="5" )
+        $OLDCGEGIS=15; 
+	else if($gradepay=="6" || $gradepay=="7" || $gradepay=="8" || $gradepay=="9" )
+        $OLDCGEGIS=30; 
+	else if($gradepay=="10" || $gradepay=="11" || $gradepay=="12")
+       $OLDCGEGIS=60; 
+		else if($gradepay=="13" || $gradepay=="13A" || $gradepay=="14" || $gradepay=="15" ||$gradepay=="16" || $gradepay=="17" || $gradepay=="18" )
+		$OLDCGEGIS=120;
+        $PF=0.1*$newpay;
+		$OLDPF=intval($payrate/12);
+	$Deduction=$PF+$CGEGIS;
+	$olddeduction=$OLDPF+$OLDCGEGIS;
+	$netsal=$receiveable-$Deduction;
+	$oldsal=$oldtot-$olddeduction;
+			echo "<td>$e_no </td>";
+				echo "<td>$e_name </td>";
+				echo "<td>$e_desig </td>";
+				echo "<td>$newpay </td>";
+				echo "<td>$hra </td>";
+				echo "<td>$ta </td>";
+				echo"<td>$DA</td>";
+				echo"<td>$receiveable</td>";
+				echo"<td>$CGEGIS</td>";
+				echo"<td>$PF</td>";
+				echo"<td>$Deduction</td>";
+				echo"<td>$netsal</td>";
+echo "</tr>";
+$i++;
+}
+}
+}
+?>
+</body>
+</html>
+
+
+
+
